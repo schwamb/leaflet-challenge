@@ -1,14 +1,12 @@
-//  Create our map, giving it the streetmap and earthquakes layers to display on load.
-  var myMap = L.map("mapid", {
-    center: [37.09, -95.71],
-    zoom: 5
-  });
-
-  // var myMap = L.map('mapid').setView([37.09, -95.71], 5);
-
-  var quakemap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+var myMap = L.map("map", {
+  center: [37, -92],
+  zoom: 4
 });
+
+// Adding the tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(myMap);
 
 
 // L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2Nod2FtYiIsImEiOiJja3BibTg0NzAwejFzMnVtdTdtbHl5Zzg4In0.-NRiPFnJSHZB87yEzFroTQ', {
@@ -19,10 +17,10 @@
 //     id: 'mapbox.streets'
 //   }).addTo(myMap);
 
-quakemap.addTo(myMap);
+// quakemap.addTo(myMap);
 
 // Store our API endpoint as queryUrl.
-var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson";
+var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_day.geojson";
 
 d3.json(queryUrl).then(function(data) {
   // Once we get a response, send the data.features object to the createFeatures function.
@@ -79,7 +77,7 @@ d3.json(queryUrl).then(function(data) {
     if (magnitude === 0) {
       return 1;
     }
-    return magnitude * 5;
+    return magnitude * 3;
   }
 
   L.geoJson(data, {
