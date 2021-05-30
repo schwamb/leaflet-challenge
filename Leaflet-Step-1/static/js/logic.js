@@ -28,7 +28,7 @@ d3.json(queryUrl).then(function(data) {
     return{
       opacity: 1,
       fillOpacity: 1,
-      fillColor: magColor(feature.properties.mag),
+      fillColor: depthColor(feature.geometry.coordinates[2]),
       color: "#000000",
       radius: magRadius(feature.properties.mag),
       stroke: true,
@@ -56,17 +56,17 @@ d3.json(queryUrl).then(function(data) {
 //           return "Enter a value between 1 - 7";
 //     }
 //  }
-  function magColor(magnitude){
+  function depthColor(depth){
     switch (true) {
-      case magnitude >5:
+      case depth >50:
         return "#C50000";
-      case magnitude >4:
+      case depth >40:
         return "#FF401C";
-      case magnitude >3:
+      case depth >30:
         return "#FEA83A";
-      case magnitude >2:
+      case depth >20:
         return "#FCF064";
-      case magnitude >1:
+      case depth >10:
         return "#B6FC64";
       default:
         return "#64FC79"
@@ -87,15 +87,71 @@ d3.json(queryUrl).then(function(data) {
         style: mapFeatures,
 
     onEachFeature: function(feature, layer) {
-       layer.bindPopup(`<h2>${feature.properties.place}</h2><hr><h2>Magnitude: ${feature.properties.mag}</h2>`)
+       layer.bindPopup(`<h2>${feature.properties.place}</h2><hr><h3>Magnitude: ${feature.properties.mag}</h3><h3>Depth (km): ${feature.geometry.coordinates[2]}</h3>`)
        console.log(feature.properties.place)
        console.log(feature.properties.mag)
+       console.log(feature.geometry.coordinates[2])
   
     }
 
 }).addTo(myMap)
+
+
+// var legend = L.control({position: "bottomright"});
+
+// legend.onAdd = function (){
+//   var div = L.DomUtil.create('div', 'info legend');
+
+//   var grades = [0, 1, 2, 3, 4, 5];
+  // var colors = [
+  //   "#C50000",
+  //   "#FF401C",
+  //   "#FEA83A",
+  //   "#FCF064",
+  //   "#B6FC64",
+  //   "#64FC79"
+  // ];
+
+//   for (var i = 0; i < grades.length; i++) {
+//     div.innerHTML +=
+//         '<i style="background:' + colors[i] + '"></i> ' +
+//         grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+
+// return div;
+//   }
+// }
+// legend.addTo(map);
+
+// });
+var legend = L.control({
+  position: "bottomright"
 });
 
+// details for the legend
+legend.onAdd = function() {
+  var div = L.DomUtil.create("div", "info legend");
+
+  var grades = [0, 10, 20, 30, 40, 50];
+  // var colors = [
+  //   "#C50000",
+  //   "#FF401C",
+  //   "#FEA83A",
+  //   "#FCF064",
+  //   "#B6FC64",
+  //   "#64FC79"
+  // ];
+
+  for (var i = 0; i < grades.length; i++) {
+    div.innerHTML +=
+        '<i style="background:' + depthColor(grades[i]) + '"></i> ' +
+        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+}
+  return div;
+};
+
+// Finally, we our legend to the map.
+legend.addTo(myMap);
+});
 
 // Loop through the cities array, and create one marker for each city object.
 // for (var i = 0; i < cities.length; i++) {
